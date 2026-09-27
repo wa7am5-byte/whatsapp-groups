@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل قروبات الواتساب والإعلانات</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- الهيدر والترويسة -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span>قروبات <span class="highlight">الواتس</span></span>
+            </div>
+            <button class="btn-primary" onclick="openModal()">
+                <i class="fa-solid fa-plus"></i> أضف قروبك مجاناً
+            </button>
+        </div>
+    </header>
+
+    <!-- مساحة إعلانية علوية -->
+    <div class="container margin-top">
+        <div class="ad-banner">
+            <p><i class="fa-solid fa-bullhorn"></i> <strong>مساحة إعلانية مميزة:</strong> أعلن عن خدمتك أو متجرك هنا ليصل لألف الزوار يومياً!</p>
+            <a href="https://wa.me/00000000000" target="_blank" class="ad-btn">تواصل للإعلان</a>
+        </div>
+    </div>
+
+    <!-- القسم الرئيسي والفلترة -->
+    <main class="container">
+        <section class="filter-section">
+            <h2>استكشف القروبات حسب التصنيف</h2>
+            <div class="categories">
+                <button class="cat-btn active" onclick="filterGroups('all')">الكل</button>
+                <button class="cat-btn" onclick="filterGroups('services')">خدمات وأعمال</button>
+                <button class="cat-btn" onclick="filterGroups('trade')">تجارة وبيع</button>
+                <button class="cat-btn" onclick="filterGroups('tech')">تقنية وتعليم</button>
+                <button class="cat-btn" onclick="filterGroups('chat')">دردشة وعام</button>
+            </div>
+        </section>
+
+        <!-- شبكة عرض القروبات -->
+        <section class="groups-grid" id="groupsGrid">
+            <!-- سيتم تحميل القروبات هنا عبر الجافاسكربت -->
+        </section>
+    </main>
+
+    <!-- نافذة إضافة قروب جديد (Modal) -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>إضافة قروب جديد</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="addGroupForm" onsubmit="handleAddGroup(event)">
+                <div class="form-group">
+                    <label>اسم القروب:</label>
+                    <input type="text" id="groupTitle" required placeholder="مثال: قروب خدمات وتصميم">
+                </div>
+                <div class="form-group">
+                    <label>التصنيف:</label>
+                    <select id="groupCategory" required>
+                        <option value="services">خدمات وأعمال</option>
+                        <option value="trade">تجارة وبيع</option>
+                        <option value="tech">تقنية وتعليم</option>
+                        <option value="chat">دردشة وعام</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>رابط الانضمام (WhatsApp):</label>
+                    <input type="url" id="groupLink" required placeholder="https://chat.whatsapp.com/...">
+                </div>
+                <div class="form-group">
+                    <label>وصف قصير:</label>
+                    <textarea id="groupDesc" rows="3" placeholder="اكتب وصفاً موجزاً عن محتوى القروب..."></textarea>
+                </div>
+                <button type="submit" class="btn-submit">نشر القروب الآن</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- الفوتر -->
+    <footer>
+        <div class="container text-center">
+            <p>جميع الحقوق محفوظة &copy; 2026 - موقع نشر قروبات الواتساب والإعلانات</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
