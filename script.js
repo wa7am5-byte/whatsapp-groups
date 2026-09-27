@@ -1,34 +1,33 @@
-// بيانات أولية تجريبية للقروبات
-const initialGroups = [
-    {
-        title: "قروب خدمات وتصميم الجرافيك",
-        category: "services",
-        link: "https://chat.whatsapp.com/example1",
-        desc: "نشر أعمال التصميم والخدمات البرمجية والاستشارات."
-    },
-    {
-        title: "سوق السيارات والمعدات",
-        category: "trade",
-        link: "https://chat.whatsapp.com/example2",
-        desc: "قروب مخصص لبيع وشراء السيارات والقطع المستعملة والجديدة."
-    },
-    {
-        title: "تعلّم البرمجة وتطوير المواقع",
-        category: "tech",
-        link: "https://chat.whatsapp.com/example3",
-        desc: "تبادل الدروس والكورسات والاستفسارات البرمجية للمبتدئين."
-    }
+// كلمة السر الخاصة بالمبرمج/الأدمن
+const ADMIN_PASSWORD = "admin123";
+
+// البيانات الأساسية الأولية
+const defaultGroups = [
+    { id: 1, title: "قروب خدمات وتصميم", category: "services", link: "https://chat.whatsapp.com/demo1", desc: "نشر تصميمات وخدمات استشارية." },
+    { id: 2, title: "سوق السيارات والعقارات", category: "trade", link: "https://chat.whatsapp.com/demo2", desc: "عروض بيع وشراء يومية." }
 ];
 
-// تحميل القروبات من التخزين المحلي أو استخدام البيانات الأولية
-let groups = JSON.parse(localStorage.getItem('my_wa_groups')) || initialGroups;
+const defaultAd = {
+    text: "مساحة إعلانية مميزة: أعلن عن خدمتك أو متجرك هنا ليصل لألف الزوار!",
+    link: "https://wa.me/00000000000"
+};
 
-// عرض القروبات عند تحميل الصفحة
+// تحميل البيانات من الـ LocalStorage
+let groups = JSON.parse(localStorage.getItem('wa_groups_data')) || defaultGroups;
+let adConfig = JSON.parse(localStorage.getItem('wa_ad_data')) || defaultAd;
+
 document.addEventListener('DOMContentLoaded', () => {
     renderGroups(groups);
+    renderAd();
 });
 
-// دالة عرض البطاقات
+// عرض الإعلان
+function renderAd() {
+    document.getElementById('adText').innerText = adConfig.text;
+    document.getElementById('adBtnLink').href = adConfig.link;
+}
+
+// عرض القروبات للزائر
 function renderGroups(groupsToDisplay) {
     const grid = document.getElementById('groupsGrid');
     grid.innerHTML = '';
@@ -47,7 +46,7 @@ function renderGroups(groupsToDisplay) {
                     <div class="card-icon"><i class="fa-brands fa-whatsapp"></i></div>
                     <div class="card-title">${group.title}</div>
                 </div>
-                <div class="card-desc">${group.desc || 'لا يوجد وصف متاح.'}</div>
+                <div class="card-desc">${group.desc || 'لا يوجد وصف.'}</div>
             </div>
             <a href="${group.link}" target="_blank" class="btn-join">
                 <i class="fa-solid fa-user-plus"></i> انضمام للقروب
@@ -57,49 +56,108 @@ function renderGroups(groupsToDisplay) {
     });
 }
 
-// دالة الفلترة حسب التصنيف
-function filterGroups(category) {
-    // تغيير شكل الأزرار
-    const buttons = document.querySelectorAll('.cat-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+// التصفية والفلترة
+function filterGroups(category, btn) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
 
     if (category === 'all') {
         renderGroups(groups);
     } else {
-        const filtered = groups.filter(g => g.category === category);
-        renderGroups(filtered);
+        renderGroups(groups.filter(g => g.category === category));
     }
 }
 
-// التحكم بالنافذة المنبثقة (Modal)
-function openModal() {
-    document.getElementById('modalOverlay').style.display = 'flex';
+// التحقق من كلمة سر الأدمن
+function checkAdminAuth() {
+    const pass = prompt("أدخل كلمة سر لوحة التحكم:");
+    if (pass === ADMIN_PASSWORD) {
+        openAdminModal();
+    } else if (pass !== null) {
+        alert("كلمة السر غير صحيحة!");
+    }
 }
 
-function closeModal() {
-    document.getElementById('modalOverlay').style.display = 'none';
+function openAdminModal() {
+    document.getElementById('adminModal').style.display = 'flex';
+    renderAdminGroupsList();
+    // تعبئة حقول الإعلان الحالية
+    document.getElementById('newAdText').value = adConfig.text;
+    document.getElementById('newAdLink').value = adConfig.link;
 }
 
-// إضافة قروب جديد
+function closeAdminModal() {
+    document.getElementById('adminModal').style.display = 'none';
+}
+
+// التنقل بين تبويبات لوحة التحكم
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+// إضافة قروب جديد عبر الأدمن
 function handleAddGroup(e) {
     e.preventDefault();
+    const newGroup = {
+        id: Date.now(),
+        title: document.getElementById('groupTitle').value,
+        category: document.getElementById('groupCategory').value,
+        link: document.getElementById('groupLink').value,
+        desc: document.getElementById('groupDesc').value
+    };
 
-    const title = document.getElementById('groupTitle').value;
-    const category = document.getElementById('groupCategory').value;
-    const link = document.getElementById('groupLink').value;
-    const desc = document.getElementById('groupDesc').value;
-
-    const newGroup = { title, category, link, desc };
-
-    // الإضافة للأنشطة والحفظ
     groups.unshift(newGroup);
-    localStorage.setItem('my_wa_groups', JSON.stringify(groups));
+    saveAndRefresh();
+    alert('تم إضافة القروب بنجاح!');
+    e.target.reset();
+}
 
-    // إعادة العرض وإغلاق النافذة
+// عرض قائمة القروبات داخل الأدمن مع زر الحذف
+function renderAdminGroupsList() {
+    const list = document.getElementById('adminGroupsList');
+    document.getElementById('groupsCount').innerText = groups.length;
+    list.innerHTML = '';
+
+    groups.forEach(group => {
+        const item = document.createElement('div');
+        item.className = 'admin-group-item';
+        item.innerHTML = `
+            <div>
+                <strong>${group.title}</strong>
+                <small style="display:block; color:#666;">${group.category}</small>
+            </div>
+            <button class="btn-delete" onclick="deleteGroup(${group.id})"><i class="fa-solid fa-trash"></i> حذف</button>
+        `;
+        list.appendChild(item);
+    });
+}
+
+// حذف قروب
+function deleteGroup(id) {
+    if (confirm("هل أنت تأكد من حذف هذا القروب؟")) {
+        groups = groups.filter(g => g.id !== id);
+        saveAndRefresh();
+        renderAdminGroupsList();
+    }
+}
+
+// تحديث الإعلان
+function handleUpdateAd(e) {
+    e.preventDefault();
+    adConfig.text = document.getElementById('newAdText').value;
+    adConfig.link = document.getElementById('newAdLink').value;
+
+    localStorage.setItem('wa_ad_data', JSON.stringify(adConfig));
+    renderAd();
+    alert('تم تحديث الإعلان بنجاح!');
+}
+
+// حفظ البيانات في التخزين المحلي وإعادة العرض
+function saveAndRefresh() {
+    localStorage.setItem('wa_groups_data', JSON.stringify(groups));
     renderGroups(groups);
-    closeModal();
-    document.getElementById('addGroupForm').reset();
-
-    alert('تم إضافة قروبك بنجاح!');
 }

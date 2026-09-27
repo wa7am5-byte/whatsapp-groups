@@ -5,89 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>دليل قروبات الواتساب والإعلانات</title>
     <link rel="stylesheet" href="style.css">
-    <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- الهيدر والترويسة -->
+    <!-- الهيدر -->
     <header>
         <div class="container header-container">
             <div class="logo">
                 <i class="fa-brands fa-whatsapp"></i>
                 <span>قروبات <span class="highlight">الواتس</span></span>
             </div>
-            <button class="btn-primary" onclick="openModal()">
-                <i class="fa-solid fa-plus"></i> أضف قروبك مجاناً
-            </button>
+            <div class="nav-btns">
+                <button class="btn-admin-login" onclick="checkAdminAuth()">
+                    <i class="fa-solid fa-lock"></i> لوحة التحكم
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- مساحة إعلانية علوية -->
+    <!-- شريط الإعلان المحدث -->
     <div class="container margin-top">
-        <div class="ad-banner">
-            <p><i class="fa-solid fa-bullhorn"></i> <strong>مساحة إعلانية مميزة:</strong> أعلن عن خدمتك أو متجرك هنا ليصل لألف الزوار يومياً!</p>
-            <a href="https://wa.me/00000000000" target="_blank" class="ad-btn">تواصل للإعلان</a>
+        <div class="ad-banner" id="adBanner">
+            <p><i class="fa-solid fa-bullhorn"></i> <span id="adText">مساحة إعلانية مميزة: أعلن عن خدمتك أو متجرك هنا!</span></p>
+            <a href="https://wa.me/00000000000" id="adBtnLink" target="_blank" class="ad-btn">تواصل للإعلان</a>
         </div>
     </div>
 
-    <!-- القسم الرئيسي والفلترة -->
+    <!-- المحتوى الرئيسي -->
     <main class="container">
         <section class="filter-section">
             <h2>استكشف القروبات حسب التصنيف</h2>
             <div class="categories">
-                <button class="cat-btn active" onclick="filterGroups('all')">الكل</button>
-                <button class="cat-btn" onclick="filterGroups('services')">خدمات وأعمال</button>
-                <button class="cat-btn" onclick="filterGroups('trade')">تجارة وبيع</button>
-                <button class="cat-btn" onclick="filterGroups('tech')">تقنية وتعليم</button>
-                <button class="cat-btn" onclick="filterGroups('chat')">دردشة وعام</button>
+                <button class="cat-btn active" onclick="filterGroups('all', this)">الكل</button>
+                <button class="cat-btn" onclick="filterGroups('services', this)">خدمات وأعمال</button>
+                <button class="cat-btn" onclick="filterGroups('trade', this)">تجارة وبيع</button>
+                <button class="cat-btn" onclick="filterGroups('tech', this)">تقنية وتعليم</button>
+                <button class="cat-btn" onclick="filterGroups('chat', this)">دردشة وعام</button>
             </div>
         </section>
 
-        <!-- شبكة عرض القروبات -->
         <section class="groups-grid" id="groupsGrid">
-            <!-- سيتم تحميل القروبات هنا عبر الجافاسكربت -->
+            <!-- تحميل القروبات هنا -->
         </section>
     </main>
 
-    <!-- نافذة إضافة قروب جديد (Modal) -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal">
+    <!-- لوحة تحكم المبرمج/الأدمن (Modal) -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal modal-wide">
             <div class="modal-header">
-                <h3>إضافة قروب جديد</h3>
-                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <h3><i class="fa-solid fa-user-gear"></i> لوحة تحكم المبرمج</h3>
+                <span class="close-btn" onclick="closeAdminModal()">&times;</span>
             </div>
-            <form id="addGroupForm" onsubmit="handleAddGroup(event)">
-                <div class="form-group">
-                    <label>اسم القروب:</label>
-                    <input type="text" id="groupTitle" required placeholder="مثال: قروب خدمات وتصميم">
+            
+            <!-- تبويبات التحكم -->
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="switchTab('addGroupTab')">إضافة قروب</button>
+                <button class="tab-btn" onclick="switchTab('manageGroupsTab')">إدارة القروبات (<span id="groupsCount">0</span>)</button>
+                <button class="tab-btn" onclick="switchTab('manageAdTab')">تعديل الإعلان</button>
+            </div>
+
+            <!-- تبويب 1: إضافة قروب -->
+            <div id="addGroupTab" class="tab-content active">
+                <form onsubmit="handleAddGroup(event)">
+                    <div class="form-group">
+                        <label>اسم القروب:</label>
+                        <input type="text" id="groupTitle" required placeholder="مثال: خدمات التصميم والبرمجة">
+                    </div>
+                    <div class="form-group">
+                        <label>التصنيف:</label>
+                        <select id="groupCategory" required>
+                            <option value="services">خدمات وأعمال</option>
+                            <option value="trade">تجارة وبيع</option>
+                            <option value="tech">تقنية وتعليم</option>
+                            <option value="chat">دردشة وعام</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>رابط القروب:</label>
+                        <input type="url" id="groupLink" required placeholder="https://chat.whatsapp.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>الوصف:</label>
+                        <textarea id="groupDesc" rows="2" placeholder="وصف قصير للقروب..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">نشر القروب فوراً</button>
+                </form>
+            </div>
+
+            <!-- تبويب 2: إدارة وحذف القروبات -->
+            <div id="manageGroupsTab" class="tab-content">
+                <div class="admin-groups-list" id="adminGroupsList">
+                    <!-- قائمة القروبات للحذف -->
                 </div>
-                <div class="form-group">
-                    <label>التصنيف:</label>
-                    <select id="groupCategory" required>
-                        <option value="services">خدمات وأعمال</option>
-                        <option value="trade">تجارة وبيع</option>
-                        <option value="tech">تقنية وتعليم</option>
-                        <option value="chat">دردشة وعام</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>رابط الانضمام (WhatsApp):</label>
-                    <input type="url" id="groupLink" required placeholder="https://chat.whatsapp.com/...">
-                </div>
-                <div class="form-group">
-                    <label>وصف قصير:</label>
-                    <textarea id="groupDesc" rows="3" placeholder="اكتب وصفاً موجزاً عن محتوى القروب..."></textarea>
-                </div>
-                <button type="submit" class="btn-submit">نشر القروب الآن</button>
-            </form>
+            </div>
+
+            <!-- تبويب 3: تعديل شريط الإعلان -->
+            <div id="manageAdTab" class="tab-content">
+                <form onsubmit="handleUpdateAd(event)">
+                    <div class="form-group">
+                        <label>نص الإعلان العلوي:</label>
+                        <input type="text" id="newAdText" required placeholder="اكتب نص الإعلان هنا...">
+                    </div>
+                    <div class="form-group">
+                        <label>رابط الواتساب للتواصل (مع المفتاح الدولي):</label>
+                        <input type="text" id="newAdLink" required placeholder="مثال: https://wa.me/963900000000">
+                    </div>
+                    <button type="submit" class="btn-submit">حفظ وتحديث الإعلان</button>
+                </form>
+            </div>
+
         </div>
     </div>
 
-    <!-- الفوتر -->
     <footer>
         <div class="container text-center">
-            <p>جميع الحقوق محفوظة &copy; 2026 - موقع نشر قروبات الواتساب والإعلانات</p>
+            <p>جميع الحقوق محفوظة &copy; 2026 - لوحة تحكم موقع القروبات والإعلانات</p>
         </div>
     </footer>
 
