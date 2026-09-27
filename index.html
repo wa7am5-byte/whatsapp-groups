@@ -3,124 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دليل قروبات الواتساب والإعلانات</title>
+    <title>دليل قروبات الواتساب والإعلانات - المنصة الأولى</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- الهيدر -->
+    <!-- الهيدر الرئيسي -->
     <header>
         <div class="container header-container">
             <div class="logo">
                 <i class="fa-brands fa-whatsapp"></i>
-                <span>قروبات <span class="highlight">الواتس</span></span>
+                <span>قروبات<span class="highlight">الخليج والشام</span></span>
             </div>
-            <div class="nav-btns">
-                <button class="btn-admin-login" onclick="checkAdminAuth()">
-                    <i class="fa-solid fa-lock"></i> لوحة التحكم
+            <div class="nav-actions">
+                <button class="btn-add-group" onclick="openUserModal()">
+                    <i class="fa-solid fa-plus-circle"></i> أضف قروبك مجاناً
+                </button>
+                <button class="btn-admin" onclick="checkAdminAuth()" title="لوحة التحكم">
+                    <i class="fa-solid fa-user-shield"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- شريط الإعلان المحدث -->
+    <!-- شريط إعلاني متميز -->
     <div class="container margin-top">
         <div class="ad-banner" id="adBanner">
-            <p><i class="fa-solid fa-bullhorn"></i> <span id="adText">مساحة إعلانية مميزة: أعلن عن خدمتك أو متجرك هنا!</span></p>
-            <a href="https://wa.me/00000000000" id="adBtnLink" target="_blank" class="ad-btn">تواصل للإعلان</a>
+            <div class="ad-content">
+                <span class="ad-badge">إعلان مميز</span>
+                <p id="adText">مساحة إعلانية مخصصة لأصحاب المحلات، الخدمات، والمتاجر المتميزة!</p>
+            </div>
+            <a href="https://wa.me/00000000000" id="adBtnLink" target="_blank" class="ad-btn">
+                <i class="fa-brands fa-whatsapp"></i> احجز إعلانك الآن
+            </a>
         </div>
     </div>
 
-    <!-- المحتوى الرئيسي -->
+    <!-- قسم البحث والفلترة -->
     <main class="container">
-        <section class="filter-section">
-            <h2>استكشف القروبات حسب التصنيف</h2>
+        <section class="search-and-filter">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" oninput="handleSearch()" placeholder="ابحث عن اسم قروب، خدمة، أو مدينة...">
+            </div>
+
             <div class="categories">
-                <button class="cat-btn active" onclick="filterGroups('all', this)">الكل</button>
-                <button class="cat-btn" onclick="filterGroups('services', this)">خدمات وأعمال</button>
-                <button class="cat-btn" onclick="filterGroups('trade', this)">تجارة وبيع</button>
-                <button class="cat-btn" onclick="filterGroups('tech', this)">تقنية وتعليم</button>
-                <button class="cat-btn" onclick="filterGroups('chat', this)">دردشة وعام</button>
+                <button class="cat-btn active" onclick="filterGroups('all', this)"><i class="fa-solid fa-border-all"></i> الكل</button>
+                <button class="cat-btn" onclick="filterGroups('services', this)"><i class="fa-solid fa-briefcase"></i> خدمات وأعمال</button>
+                <button class="cat-btn" onclick="filterGroups('trade', this)"><i class="fa-solid fa-cart-shopping"></i> بيع وتجارة</button>
+                <button class="cat-btn" onclick="filterGroups('tech', this)"><i class="fa-solid fa-laptop-code"></i> تقنية وبرمجة</button>
+                <button class="cat-btn" onclick="filterGroups('chat', this)"><i class="fa-solid fa-comments"></i> دردشة وعام</button>
             </div>
         </section>
 
+        <!-- شبكة عرض القروبات -->
         <section class="groups-grid" id="groupsGrid">
-            <!-- تحميل القروبات هنا -->
+            <!-- يتم تعبئة البطاقات عبر الجافاسكربت -->
         </section>
     </main>
 
-    <!-- لوحة تحكم المبرمج/الأدمن (Modal) -->
-    <div class="modal-overlay" id="adminModal">
-        <div class="modal modal-wide">
+    <!-- نافذة إضافة قروب للزائر -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-user-gear"></i> لوحة تحكم المبرمج</h3>
-                <span class="close-btn" onclick="closeAdminModal()">&times;</span>
+                <h3><i class="fa-brands fa-whatsapp highlight"></i> نشر قروب جديد</h3>
+                <span class="close-btn" onclick="closeUserModal()">&times;</span>
             </div>
-            
-            <!-- تبويبات التحكم -->
-            <div class="admin-tabs">
-                <button class="tab-btn active" onclick="switchTab('addGroupTab')">إضافة قروب</button>
-                <button class="tab-btn" onclick="switchTab('manageGroupsTab')">إدارة القروبات (<span id="groupsCount">0</span>)</button>
-                <button class="tab-btn" onclick="switchTab('manageAdTab')">تعديل الإعلان</button>
-            </div>
-
-            <!-- تبويب 1: إضافة قروب -->
-            <div id="addGroupTab" class="tab-content active">
-                <form onsubmit="handleAddGroup(event)">
-                    <div class="form-group">
-                        <label>اسم القروب:</label>
-                        <input type="text" id="groupTitle" required placeholder="مثال: خدمات التصميم والبرمجة">
-                    </div>
-                    <div class="form-group">
-                        <label>التصنيف:</label>
-                        <select id="groupCategory" required>
-                            <option value="services">خدمات وأعمال</option>
-                            <option value="trade">تجارة وبيع</option>
-                            <option value="tech">تقنية وتعليم</option>
-                            <option value="chat">دردشة وعام</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>رابط القروب:</label>
-                        <input type="url" id="groupLink" required placeholder="https://chat.whatsapp.com/...">
-                    </div>
-                    <div class="form-group">
-                        <label>الوصف:</label>
-                        <textarea id="groupDesc" rows="2" placeholder="وصف قصير للقروب..."></textarea>
-                    </div>
-                    <button type="submit" class="btn-submit">نشر القروب فوراً</button>
-                </form>
-            </div>
-
-            <!-- تبويب 2: إدارة وحذف القروبات -->
-            <div id="manageGroupsTab" class="tab-content">
-                <div class="admin-groups-list" id="adminGroupsList">
-                    <!-- قائمة القروبات للحذف -->
+            <form onsubmit="handleUserSubmit(event)">
+                <div class="form-group">
+                    <label>اسم القروب الرسمي:</label>
+                    <input type="text" id="userGroupTitle" required placeholder="مثال: سوق الخدمات والتقنية">
                 </div>
-            </div>
-
-            <!-- تبويب 3: تعديل شريط الإعلان -->
-            <div id="manageAdTab" class="tab-content">
-                <form onsubmit="handleUpdateAd(event)">
-                    <div class="form-group">
-                        <label>نص الإعلان العلوي:</label>
-                        <input type="text" id="newAdText" required placeholder="اكتب نص الإعلان هنا...">
-                    </div>
-                    <div class="form-group">
-                        <label>رابط الواتساب للتواصل (مع المفتاح الدولي):</label>
-                        <input type="text" id="newAdLink" required placeholder="مثال: https://wa.me/963900000000">
-                    </div>
-                    <button type="submit" class="btn-submit">حفظ وتحديث الإعلان</button>
-                </form>
-            </div>
-
+                <div class="form-group">
+                    <label>التصنيف:</label>
+                    <select id="userGroupCategory" required>
+                        <option value="services">خدمات وأعمال</option>
+                        <option value="trade">بيع وتجارة</option>
+                        <option value="tech">تقنية وبرمجة</option>
+                        <option value="chat">دردشة وعام</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>رابط دعوة القروب (WhatsApp):</label>
+                    <input type="url" id="userGroupLink" required placeholder="https://chat.whatsapp.com/...">
+                </div>
+                <div class="form-group">
+                    <label>وصف القروب وشروطه:</label>
+                    <textarea id="userGroupDesc" rows="3" placeholder="اكتب نبذة مختصرة عن نشاط القروب..."></textarea>
+                </div>
+                <button type="submit" class="btn-submit">إرسال للمراجعة والنشر</button>
+            </form>
         </div>
     </div>
 
+    <!-- لوحة تحكم المبرمج/الأدمن متكاملة -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal modal-wide">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-sliders"></i> لوحة إدارة الموقع</h3>
+                <span class="close-btn" onclick="closeAdminModal()">&times;</span>
+            </div>
+            
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="switchTab('pendingTab', this)">
+                    طلبات التوثيق (<span id="pendingCount">0</span>)
+                </button>
+                <button class="tab-btn" onclick="switchTab('activeTab', this)">
+                    القروبات النشطة (<span id="activeCount">0</span>)
+                </button>
+                <button class="tab-btn" onclick="switchTab('adTab', this)">إدارة الإعلانات</button>
+            </div>
+
+            <!-- تبويب 1: الطلبات المعلقة -->
+            <div id="pendingTab" class="tab-content active">
+                <div class="admin-list" id="pendingList"></div>
+            </div>
+
+            <!-- تبويب 2: إدارة القروبات المقبولة -->
+            <div id="activeTab" class="tab-content">
+                <div class="admin-list" id="activeList"></div>
+            </div>
+
+            <!-- تبويب 3: تعديل الإعلان -->
+            <div id="adTab" class="tab-content">
+                <form onsubmit="handleUpdateAd(event)">
+                    <div class="form-group">
+                        <label>نص الشريط الإعلاني:</label>
+                        <input type="text" id="newAdText" required>
+                    </div>
+                    <div class="form-group">
+                        <label>رابط التواصل للواتساب (https://wa.me/...):</label>
+                        <input type="url" id="newAdLink" required>
+                    </div>
+                    <button type="submit" class="btn-submit">تحديث الإعلان فوراً</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- الفوتر -->
     <footer>
         <div class="container text-center">
-            <p>جميع الحقوق محفوظة &copy; 2026 - لوحة تحكم موقع القروبات والإعلانات</p>
+            <p>جميع الحقوق محفوظة &copy; 2026 - دليل القروبات والإعلانات المعتمد</p>
         </div>
     </footer>
 
